@@ -90,5 +90,7 @@ See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the full design rationale
 
 ## License
 
-Private. Authored by @alanwei1988-hub for the 苏秦 (suqin) AI colleague
-product. Not open source yet.
+Authored by [@alanwei1988-hub](https://github.com/alanwei1988-hub) as part
+of the 苏秦 (suqin) AI colleague product. Released as open source — feel
+free to fork, reuse, and submit issues / PRs. A formal LICENSE file will be
+added in a follow-up commit (likely MIT).

@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>苏秦 BP · Design Demo (1-3)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary:      #1E40AF;
+    --primary-deep: #0E2A6B;
+    --accent:       #0EA5E9;
+    --success:      #16A34A;
+    --ink:          #0F172A;
+    --ink-soft:     #1E293B;
+    --muted:        #64748B;
+    --line:         #E2E8F0;
+    --paper:        #FAFAF7;
+    --paper-warm:   #F4F1EA;
+    --white:        #FFFFFF;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: #1A1A1A; }
+  body {
+    font-family: "Noto Sans SC", "Inter", system-ui, -apple-system, sans-serif;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    padding: 40px 0;
+  }
+  .slide {
+    width: 1920px;
+    height: 1080px;
+    margin: 0 auto 48px auto;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+  }
+  /* Tab marker between slides */
+  .marker {
+    width: 1920px;
+    margin: 0 auto;
+    padding: 12px 24px;
+    color: #888;
+    font-family: "Inter", sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  /* shared atoms */
+  .kicker {
+    font-family: "Inter", sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .brand-footer {
+    position: absolute;
+    bottom: 36px;
+    left: 64px;
+    font-family: "Inter", sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.24em;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .page-num {
+    position: absolute;
+    bottom: 36px;
+    right: 64px;
+    font-family: "Inter", sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+  }
+  .page-num strong { color: var(--ink); font-weight: 700; }
+
+  /* ======== SLIDE 1 — COVER ======== */
+  .cover {
+    background: var(--paper);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 100px 120px;
+  }
+  /* decorative gradient orb */
+  .cover::before {
+    content: "";
+    position: absolute;
+    bottom: -260px; left: -200px;
+    width: 800px; height: 800px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(30,64,175,0.10) 0%, rgba(30,64,175,0) 65%);
+    pointer-events: none;
+  }
+  .cover::after {
+    content: "";
+    position: absolute;
+    top: -200px; right: -160px;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(14,165,233,0.08) 0%, rgba(14,165,233,0) 65%);
+    pointer-events: none;
+  }
+  .cover-mark { position: relative; }
+  .cover-mark .glyph {
+    font-family: "Noto Sans SC", sans-serif;
+    font-size: 360px;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 0.9;
+    background: linear-gradient(160deg, var(--primary-deep) 10%, var(--primary) 50%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    z-index: 2;
+  }
+  .cover-mark .echo {
+    position: absolute;
+    inset: 0;
+    font-family: "Noto Sans SC", sans-serif;
+    font-size: 360px;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 0.9;
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(30,64,175,0.18);
+    transform: translate(20px, 20px);
+    z-index: 1;
+  }
+  .cover-mark .pinyin {
+    margin-top: 24px;
+    font-family: "Inter", sans-serif;
+    font-size: 28px;
+    font-weight: 300;
+    letter-spacing: 0.4em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .cover-content {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    z-index: 3;
+  }
+  .cover-content .kicker { color: var(--accent); }
+  .cover-title {
+    font-size: 72px;
+    line-height: 1.12;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.015em;
+  }
+  .cover-title strong {
+    color: var(--primary);
+    font-weight: 900;
+    position: relative;
+  }
+  .cover-title strong::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: 6px;
+    height: 14px;
+    background: rgba(14,165,233,0.20);
+    z-index: -1;
+    border-radius: 2px;
+  }
+  .cover-lead {
+    font-size: 22px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    max-width: 640px;
+    font-weight: 400;
+  }
+  .cover-meta {
+    margin-top: 32px;
+    display: flex;
+    gap: 28px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .cover-meta .pill {
+    border: 1.5px solid var(--ink);
+    padding: 14px 28px;
+    border-radius: 100px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    background: var(--white);
+  }
+  .cover-meta .meta-line {
+    font-family: "Inter", sans-serif;
+    font-size: 14px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+
+  /* ======== SLIDE 2 — PROBLEM ======== */
+  .problem {
+    background: var(--white);
+    padding: 100px 120px;
+  }
+  .problem::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 6px; height: 100%;
+    background: linear-gradient(180deg, var(--primary) 0%, var(--accent) 100%);
+  }
+  .problem-header { max-width: 1200px; margin-bottom: 80px; }
+  .problem-header .kicker {
+    color: var(--primary);
+    margin-bottom: 24px;
+  }
+  .problem-headline {
+    font-size: 64px;
+    font-weight: 700;
+    line-height: 1.18;
+    color: var(--ink);
+    letter-spacing: -0.012em;
+  }
+  .problem-headline em {
+    color: var(--primary);
+    font-style: normal;
+    background: linear-gradient(180deg, transparent 60%, rgba(30,64,175,0.15) 60%, rgba(30,64,175,0.15) 92%, transparent 92%);
+    padding: 0 8px;
+  }
+  .problem-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 56px;
+  }
+  .stat-card {
+    border-top: 3px solid var(--ink);
+    padding-top: 36px;
+  }
+  .stat-card:nth-child(2) { border-top-color: var(--primary); }
+  .stat-card:nth-child(3) { border-top-color: var(--accent); }
+  .stat-card .num {
+    font-family: "Inter", sans-serif;
+    font-size: 112px;
+    font-weight: 800;
+    line-height: 0.95;
+    color: var(--ink);
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: baseline;
+  }
+  .stat-card:nth-child(2) .num { color: var(--primary); }
+  .stat-card:nth-child(3) .num { color: var(--primary-deep); }
+  .stat-card .num .unit {
+    font-size: 44px;
+    color: var(--muted);
+    font-weight: 600;
+    margin-left: 6px;
+    letter-spacing: 0;
+  }
+  .stat-card .label {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 14px;
+  }
+  .stat-card .desc {
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+  .source {
+    margin-top: 64px;
+    font-size: 13px;
+    color: var(--muted);
+    border-top: 1px solid var(--line);
+    padding-top: 18px;
+    letter-spacing: 0.02em;
+  }
+
+  /* ======== SLIDE 3 — SOLUTION ======== */
+  .solution {
+    background: linear-gradient(170deg, var(--paper-warm) 0%, var(--paper) 60%, var(--white) 100%);
+    padding: 100px 120px;
+  }
+  .solution .kicker {
+    color: var(--primary);
+    margin-bottom: 24px;
+  }
+  .solution-hero {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 56px;
+    row-gap: 16px;
+    align-items: end;
+    margin-bottom: 72px;
+  }
+  .solution-hero .name {
+    font-size: 144px;
+    font-weight: 900;
+    color: var(--primary);
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+  }
+  .solution-hero .definition {
+    font-size: 48px;
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1.18;
+    padding-bottom: 12px;
+  }
+  .solution-hero .definition .equals {
+    font-family: "Inter", sans-serif;
+    font-weight: 200;
+    color: var(--accent);
+    margin-right: 16px;
+    font-size: 56px;
+  }
+  .solution-hero .definition strong {
+    font-weight: 700;
+    color: var(--primary);
+  }
+  .capability-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin-bottom: 56px;
+  }
+  .cap {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 32px;
+    position: relative;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.04), 0 8px 24px rgba(15,23,42,0.04);
+  }
+  .cap-icon {
+    width: 44px;
+    height: 44px;
+    margin-bottom: 28px;
+    color: var(--primary);
+  }
+  .cap-num {
+    position: absolute;
+    top: 32px;
+    right: 32px;
+    font-family: "Inter", sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+  }
+  .cap-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+  .cap-desc {
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--muted);
+  }
+  .deploy-strip {
+    padding: 36px 48px;
+    background: var(--ink);
+    color: var(--white);
+    border-radius: 16px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 32px;
+    align-items: center;
+  }
+  .deploy-strip .label {
+    font-family: "Inter", sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .deploy-strip .text {
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .deploy-strip .text strong {
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .deploy-strip .tags {
+    font-family: "Inter", sans-serif;
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.18em;
+    text-align: right;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= SLIDE 1 — COVER ================= -->
+<div class="marker">SLIDE · 01 — COVER</div>
+<section class="slide cover">
+  <div class="cover-mark">
+    <div class="echo">苏秦</div>
+    <div class="glyph">苏秦</div>
+    <div class="pinyin">S U Q I N</div>
+  </div>
+
+  <div class="cover-content">
+    <div class="kicker">CHINA'S FIRST GENERAL-PURPOSE AI COLLEAGUE</div>
+    <h1 class="cover-title">第一位真正能<br><strong>独立工作</strong>的 AI 同事</h1>
+    <p class="cover-lead">
+      为中国 SMB 自研的通用 toB Agent —— 在企业微信里上班，
+      跨业务系统执行多步任务，处理你来不及做、又不想招人的所有杂活。
+    </p>
+    <div class="cover-meta">
+      <span class="pill">Pre-A 轮融资</span>
+      <span class="meta-line">2026 · Q2  ·  机密 · 仅供投资人沟通使用</span>
+    </div>
+  </div>
+
+  <div class="brand-footer">SUQIN.AI</div>
+  <div class="page-num"><strong>01</strong> / 10</div>
+</section>
+
+<!-- ================= SLIDE 2 — PROBLEM ================= -->
+<div class="marker">SLIDE · 02 — PROBLEM</div>
+<section class="slide problem">
+  <div class="problem-header">
+    <div class="kicker">PROBLEM</div>
+    <h2 class="problem-headline">
+      每家 SMB 都需要 <em>5 个全才员工</em>，<br>
+      却只雇得起 2 个。
+    </h2>
+  </div>
+
+  <div class="problem-grid">
+    <div class="stat-card">
+      <div class="num">87<span class="unit">%</span></div>
+      <div class="label">招不到合适的人</div>
+      <div class="desc">中小企业 HR 表示，能横跨合同、报销、客户跟进、行业研究的复合型员工"基本招不到"。</div>
+    </div>
+    <div class="stat-card">
+      <div class="num">3.2<span class="unit">×</span></div>
+      <div class="label">薪酬成本是大厂的</div>
+      <div class="desc">为了留住一个合格的"全才同事"，SMB 平均要付出大厂同岗位 3.2 倍的薪酬溢价。</div>
+    </div>
+    <div class="stat-card">
+      <div class="num">¥45<span class="unit">万 / 年</span></div>
+      <div class="label">机会成本 · 单家公司</div>
+      <div class="desc">老板亲自处理琐碎事务的时间成本测算，相当于每年损失 45 万元的战略性产出。</div>
+    </div>
+  </div>
+
+  <div class="source">数据来源：苏秦 2025 中小企业经营调研 N=320 · 艾瑞咨询《2025 中国 SMB 数字化白皮书》</div>
+  <div class="brand-footer">SUQIN.AI</div>
+  <div class="page-num"><strong>02</strong> / 10</div>
+</section>
+
+<!-- ================= SLIDE 3 — SOLUTION ================= -->
+<div class="marker">SLIDE · 03 — SOLUTION</div>
+<section class="slide solution">
+  <div class="kicker">SOLUTION</div>
+
+  <div class="solution-hero">
+    <div class="name">苏秦</div>
+    <div class="definition">
+      <span class="equals">=</span>一位永不下班、跨域工作的 <strong>AI 同事</strong>
+    </div>
+  </div>
+
+  <div class="capability-row">
+    <div class="cap">
+      <span class="cap-num">01</span>
+      <svg class="cap-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="8" y="6" width="32" height="36" rx="3"/>
+        <line x1="16" y1="16" x2="32" y2="16"/>
+        <line x1="16" y1="24" x2="32" y2="24"/>
+        <line x1="16" y1="32" x2="26" y2="32"/>
+      </svg>
+      <div class="cap-title">文档处理</div>
+      <div class="cap-desc">合同 / 报告 / 邮件 / Word / Excel / PPT / 海报，自然语言一句话生成与改写。</div>
+    </div>
+
+    <div class="cap">
+      <span class="cap-num">02</span>
+      <svg class="cap-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="20" cy="20" r="13"/>
+        <line x1="30" y1="30" x2="42" y2="42"/>
+      </svg>
+      <div class="cap-title">信息检索</div>
+      <div class="cap-desc">公司知识库 + 行业资讯 + 政策文件，跨源检索 + 引用回答，5 秒拿到结论。</div>
+    </div>
+
+    <div class="cap">
+      <span class="cap-num">03</span>
+      <svg class="cap-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="24" cy="24" r="4" fill="currentColor"/>
+        <path d="M24 6 L24 14 M24 34 L24 42 M6 24 L14 24 M34 24 L42 24"/>
+        <path d="M11 11 L17 17 M31 31 L37 37 M37 11 L31 17 M17 31 L11 37"/>
+      </svg>
+      <div class="cap-title">流程自动化</div>
+      <div class="cap-desc">审批 · 归档 · 提醒 · 跨系统 RPA，无人值守 7×24 运转，可解释、可追溯。</div>
+    </div>
+
+    <div class="cap">
+      <span class="cap-num">04</span>
+      <svg class="cap-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M8 10 H40 V32 H22 L14 40 V32 H8 Z"/>
+        <circle cx="18" cy="21" r="1.5" fill="currentColor"/>
+        <circle cx="24" cy="21" r="1.5" fill="currentColor"/>
+        <circle cx="30" cy="21" r="1.5" fill="currentColor"/>
+      </svg>
+      <div class="cap-title">对话式协作</div>
+      <div class="cap-desc">就在企业微信群里上班 —— @苏秦 即可发起任务，对话记录即审计留痕。</div>
+    </div>
+  </div>
+
+  <div class="deploy-strip">
+    <div>
+      <div class="label">DEPLOYMENT</div>
+      <div class="text">部署在 <strong>企业微信</strong> · <strong>私有化后台</strong>，零安装、零迁移、合规可控。</div>
+    </div>
+    <div class="tags">CHAT-NATIVE<br>MULTI-AGENT<br>ON-PREM READY</div>
+  </div>
+
+  <div class="brand-footer">SUQIN.AI</div>
+  <div class="page-num"><strong>03</strong> / 10</div>
+</section>
+
+</body>
+</html>

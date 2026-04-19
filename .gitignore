@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.python-version
+
+# Build outputs
+build/
+dist/
+*.pptx
+*.png
+
+# Allow committed example fixtures
+!examples/**/*.png
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Playwright
+test-results/
+playwright-report/
+.playwright/
+
+# Local secrets
+.env
+.env.local
+*.pat
+*.token
